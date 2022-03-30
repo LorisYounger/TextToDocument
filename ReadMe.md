@@ -1,6 +1,6 @@
 # TextToDocument
 
-<img src="Ttd.png" alt="TtD" height="150px" />
+<img src="TtD.png" alt="TtD" height="150px" />
 
 TextToDocument 是一个简单的富文本格式化语言
 本类库将会帮助用户转换TtD文本为富文本
