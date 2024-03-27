@@ -9,25 +9,75 @@ using static TextToDocument.TtD;
 
 namespace TextToDocument
 {
+#nullable enable
+    /// <summary>
+    /// 预设格式
+    /// </summary>
     public class TextFormat
     {
+        /// <summary>
+        /// 预设标题1格式
+        /// </summary>
         public Format H1;
+        /// <summary>
+        /// 预设标题2格式
+        /// </summary>
         public Format H2;
+        /// <summary>
+        /// 预设标题3格式
+        /// </summary>
         public Format H3;
+        /// <summary>
+        /// 预设标题4格式
+        /// </summary>
         public Format H4;
+        /// <summary>
+        /// 预设标题5格式
+        /// </summary>
         public Format H5;
+        /// <summary>
+        /// 预设标题6格式
+        /// </summary>
         public Format H6;
+        /// <summary>
+        /// 预设默认格式
+        /// </summary>
         public Format P;
+        /// <summary>
+        /// 预设粗体格式
+        /// </summary>
         public Format B;
+        /// <summary>
+        /// 预设斜体格式
+        /// </summary>
         public Format I;
+        /// <summary>
+        /// 预设下划线格式
+        /// </summary>
         public Format U;
+        /// <summary>
+        /// 预设删除线格式
+        /// </summary>
         public Format D;
-
+        /// <summary>
+        /// 自定格式1
+        /// </summary>
         public Format DIY1;
+        /// <summary>
+        /// 自定格式2
+        /// </summary>
         public Format DIY2;
+        /// <summary>
+        /// 自定格式3
+        /// </summary>
         public Format DIY3;
+        /// <summary>
+        /// 自定格式4
+        /// </summary>
         public Format DIY4;
-
+        /// <summary>
+        /// 新建预设格式
+        /// </summary>
         public TextFormat()
         {
             H1 = new Format() { FontSize = 32, FontWeight = FontWeights.Bold };
@@ -41,6 +91,7 @@ namespace TextToDocument
             I = new Format() { FontStyle = FontStyles.Italic };
             U = new Format() { TextDecorations = TextDecorations.Underline };
             D = new Format() { TextDecorations = TextDecorations.Strikethrough };
+            DIY1 = DIY2 = DIY3 = DIY4 = P;
         }
         /// <summary>
         /// 为Base应用相应格式
@@ -160,14 +211,14 @@ namespace TextToDocument
             public short ForeColorG;
             public short ForeColorB;
 
-            public TextDecorationCollection TextDecorations;
-            public FontStyle FontStyle;
-            public FontWeight FontWeight;
+            public TextDecorationCollection? TextDecorations;
+            public FontStyle? FontStyle;
+            public FontWeight? FontWeight;
             public double FontSize = double.NaN;
-            public FontFamily FontFamily;
-            public FontStretch FontStretch;
-            public Brush Foreground;
-            public Brush Background;
+            public FontFamily? FontFamily;
+            public FontStretch? FontStretch;
+            public Brush? Foreground;
+            public Brush? Background;
             /// <summary>
             /// 应用其他格式到该格式
             /// </summary>
@@ -248,11 +299,11 @@ namespace TextToDocument
                 if (!double.IsNaN(FontSize))
                     inline.FontSize = FontSize;
                 if (FontStyle != null)
-                    inline.FontStyle = FontStyle;
+                    inline.FontStyle = FontStyle.Value;
                 if (FontWeight != null)
-                    inline.FontWeight = FontWeight;
+                    inline.FontWeight = FontWeight.Value;
                 if (FontStretch != null)
-                    inline.FontStretch = FontStretch;
+                    inline.FontStretch = FontStretch.Value;
                 if (TextDecorations != null)
                     inline.TextDecorations = TextDecorations;
                 inline.Foreground = ForegroundBrush;

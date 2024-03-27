@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextToDocument", "TextToDoc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEMO", "DEMO\DEMO.csproj", "{7DDC79E8-29FC-4DEB-8C19-5818FB237E6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextToDocument.Core", "TextToDocument.Core\TextToDocument.Core.csproj", "{1EFB176E-191E-4482-AC5C-7E72A9F5B2D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7DDC79E8-29FC-4DEB-8C19-5818FB237E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DDC79E8-29FC-4DEB-8C19-5818FB237E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DDC79E8-29FC-4DEB-8C19-5818FB237E6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EFB176E-191E-4482-AC5C-7E72A9F5B2D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EFB176E-191E-4482-AC5C-7E72A9F5B2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EFB176E-191E-4482-AC5C-7E72A9F5B2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EFB176E-191E-4482-AC5C-7E72A9F5B2D2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
