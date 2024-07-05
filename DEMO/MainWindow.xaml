@@ -17,7 +17,7 @@
         </RichTextBox>
         <TextBox x:Name="TextBoxIn" Grid.Column="1"  TextWrapping="Wrap" Text="TextBox" Margin="2"
                  AcceptsReturn="True" AcceptsTab="True"
-                TextChanged="TextBoxIn_TextChanged" />
+                TextChanged="TextBoxIn_TextChanged" MouseDoubleClick="TextBoxIn_MouseDoubleClick" />
 
     </Grid>
 </Window>

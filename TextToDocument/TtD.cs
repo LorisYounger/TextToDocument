@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Documents;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TextToDocument
 {
@@ -207,6 +209,7 @@ namespace TextToDocument
                 format = DefaultFormart;
             foreach (string str in text.Replace("\\|", "\\split").Split('|'))
             {
+                string value = str;
                 if (isstate)
                 {
                     if (str.ToLower() == "p")
@@ -218,20 +221,26 @@ namespace TextToDocument
                         if (Enum.TryParse<TextState>(str.Substring(1), true, out var res))
                             states.Remove(res);
                         else//容错
+                        {
+                            value = '|' + value;
                             goto TAGstate;
+                        }
                     }
                     else
                     {
                         if (Enum.TryParse<TextState>(str, true, out var res))
                             states.Add(res);
                         else//容错
+                        {
+                            value = '|' + value;
                             goto TAGstate;
+                        }
                     }
                     isstate = false;
                     continue;
                 }
             TAGstate:
-                string value = str.Replace("\\split", "|");
+                value = value.Replace("\\split", "|");
                 if (value.Length > 0)
                     if (states.Contains(TextState.H1) || states.Contains(TextState.H2) || states.Contains(TextState.H3)
                         || states.Contains(TextState.H4) || states.Contains(TextState.H5) || states.Contains(TextState.H6))
@@ -251,6 +260,7 @@ namespace TextToDocument
             document.Blocks.Add(para);
             return document;
         }
+
         /// <summary>
         /// 将文本转换为富文本 Paragraph 显示效果并没有 Document 好
         /// </summary>
@@ -291,5 +301,143 @@ namespace TextToDocument
             }
             return para;
         }
+        /// <summary>
+        /// 逐字序列输出文本
+        /// </summary>
+        public class FlowOutPut
+        {
+            FlowDocument Document;
+            List<string> Text;
+            TextFormat Format;
+            /// <summary>
+            /// 创建一个逐字序列输出文本
+            /// </summary>
+            /// <param name="document"></param>
+            /// <param name="text"></param>
+            /// <param name="format"></param>
+            public FlowOutPut(FlowDocument document, string text, TextFormat? format = null)
+            {
+                Document = document;
+                Text = text.Replace("\\|", "\\split").Split('|').ToList();
+                if (format == null)
+                    Format = DefaultFormart;
+                else
+                    Format = format;
+            }
+            /// <summary>
+            /// 能否继续输出文本
+            /// </summary>
+            public bool CanNext() => Text.Count > 0 || (FRun != null && FRun.CanNext());
+
+            Paragraph? para;
+            bool isstate = false;
+            List<TextState> states = new List<TextState>();
+            int valuecount = 0;
+            /// <summary>
+            /// 生成下一个字符
+            /// </summary>
+            /// <returns></returns>
+            public bool Next()
+            {
+                if (FRun != null)
+                {
+                    if (FRun.Next())
+                        return true;
+                    else
+                        FRun = null;
+                }
+                if (Text.Count == 0)
+                    return false;
+                string value = Text[0];
+                Text.RemoveAt(0);
+                if (isstate)
+                {
+                    if (value.ToLower() == "p")
+                    {
+                        states.Clear();
+                    }
+                    else if (value.StartsWith("-"))
+                    {
+                        if (Enum.TryParse<TextState>(value.Substring(1), true, out var res))
+                            states.Remove(res);
+                        else//容错
+                        {
+                            value = '|' + value;
+                            isstate = false; goto TAGstate;
+                        }
+                    }
+                    else
+                    {
+                        if (Enum.TryParse<TextState>(value, true, out var res))
+                            states.Add(res);
+                        else//容错
+                        {
+                            value = '|' + value;
+                            isstate = false; goto TAGstate;
+                        }
+                    }
+                    isstate = false;
+                    return Next();
+                }
+            TAGstate:
+                value = value.Replace("\\split", "|");
+                var run = TextToRun(states.ToArray(), string.Empty, Format);
+                if (value.Length > 0)
+                    if (states.Contains(TextState.H1) || states.Contains(TextState.H2) || states.Contains(TextState.H3)
+                        || states.Contains(TextState.H4) || states.Contains(TextState.H5) || states.Contains(TextState.H6))
+                    {
+                        if (para != null && para.Inlines.Count > 0)
+                        {
+                            ((Run)para.Inlines.Last()).Text = ((Run)para.Inlines.Last()).Text.TrimEnd('\n');
+                        }
+                        para = new Paragraph(run);
+                        Document.Blocks.Add(para);
+                    }
+                    else if (para != null)
+                        para.Inlines.Add(run);
+                    else
+                    {
+                        para = new Paragraph(run);
+                        Document.Blocks.Add(para);
+                    }
+                else
+                {
+                    isstate = true;
+                    return Next();
+                }
+                FRun = new FlowRun(run, value);
+                FRun.Next();
+                isstate = true;
+                return true;
+            }
+            FlowRun? FRun = null;
+            class FlowRun
+            {
+                public Run Run;
+                public List<char> Value;
+
+                public FlowRun(Run run, string value)
+                {
+                    Run = run;
+                    Value = value.ToList();
+                }
+                public bool CanNext() => Value.Count > 0;
+
+                public bool Next()
+                {
+                    if (Value.Count > 0)
+                    {
+                        var str = Value[0];
+                        Value.RemoveAt(0);
+                        Run.Text += str;
+                        return true;
+                    }
+                    else
+                        return false;
+                }
+
+            }
+        }
     }
 }
+

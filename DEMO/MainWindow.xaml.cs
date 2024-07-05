@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -37,11 +38,32 @@ namespace DEMO
                 "在标签前面 添加 `-` 符号即可移除 之前应用的相应标签, `p` 则移除全部标签\n例如 `\\|R\\|红色\\|-R\\|黑色` |R|红色|-R|黑色\n" +
                 "|h2|颜色混合|p|\n" +
                 "标签颜色支持混合成其他颜色\n例如 `|R3|颜色R3|G3|+G3|B3|+B3|P|`";
+            timer.Elapsed += (s, e) =>
+            {
+                if (FO?.CanNext() == true)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        FO.Next();
+                        TextBoxOut.ScrollToEnd();
+                    });
+                    timer.Start();
+                }
+            };
         }
 
         private void TextBoxIn_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBoxOut.Document = TtD.TextToDocument(TextBoxIn.Text);
+        }
+        Timer timer = new Timer(50);
+        TtD.FlowOutPut FO;
+        private void TextBoxIn_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBoxOut.Document.Blocks.Clear();
+            FO = new TtD.FlowOutPut(TextBoxOut.Document, TextBoxIn.Text);
+            FO.Next();
+            timer.Start();
         }
     }
 }
